@@ -1,0 +1,92 @@
+#include<iostream>
+#include<queue>
+#include<math.h>
+using namespace std;
+class Node
+{
+    public:
+    int data;
+  //  Node*root;
+    Node*left;
+    Node*right;
+    Node(int val)
+    {
+        data=val;
+    //    root=NULL;
+        left=NULL;
+        right=NULL;
+    }
+};
+Node* insertBST(Node* &root,int val)
+{
+    if(root==NULL)
+    return new Node(val);
+    if(val<root->data)
+    root->left=insertBST(root->left,val);
+    else
+    root->right=insertBST(root->right,val);
+    return root;
+}
+Node* InorderSucc(Node* root)
+{
+    while(root->left!=NULL)
+    root=root->left;
+    return root;
+}
+Node* DeleteBST(Node* root,int key)
+{
+    if(key<root->data)
+        root->left=DeleteBST(root->left,key);
+    else if(key>root->data)
+        root->right=DeleteBST(root->right,key);
+    else
+    {
+        if(root->left==NULL && root->right==NULL)
+        {
+            Node*temp=root;
+            delete temp;
+            root=NULL;
+        }
+        else if(root->left==NULL)
+        {
+            Node*temp=root;
+            root=root->right;
+            delete temp;
+        }
+        else if(root->right==NULL)
+        {
+            Node*temp=root;
+            root=root->left;
+            delete temp;
+        }
+        else
+        {
+            Node*temp=InorderSucc(root->right);
+            root->data=temp->data;
+            root->right=DeleteBST(root->right,temp->data);
+        }
+    }
+    return root;
+}
+void printInorder(Node* root)
+{
+    if(root==NULL)
+    return;
+    printInorder(root->left);
+    cout<<root->data<<" ";
+    printInorder(root->right);
+}
+int main()
+{
+ Node*root=NULL;
+ root=insertBST(root,5);
+ insertBST(root,1);
+ insertBST(root,3);
+ insertBST(root,4);
+ insertBST(root,2);
+ insertBST(root,7);
+ printInorder(root);
+ cout<<endl;
+ DeleteBST(root,7);
+ printInorder(root);
+}
